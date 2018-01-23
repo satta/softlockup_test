@@ -4,7 +4,6 @@
 
 struct task_struct *task0;
 static spinlock_t spinlock;
-int val;
 
 int task(void *arg)
 {
@@ -23,17 +22,15 @@ int task(void *arg)
         spin_unlock(&spinlock);
     }
 
-    return val;
+    return 0;
 }
 
 static int softlockup_init(void)
 {
     printk(KERN_INFO "%s:%d\n",__func__,__LINE__);
 
-    val = 1;
     spin_lock_init(&spinlock);
-    task0 = kthread_run(&task,(void *)val,"softlockup_thread");
-    set_cpus_allowed(task0, *cpumask_of(0));
+    task0 = kthread_run(&task,NULL,"softlockup_thread");
 
     return 0;
 }
